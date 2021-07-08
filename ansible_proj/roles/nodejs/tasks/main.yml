@@ -1,11 +1,15 @@
 ---
 # tasks file for nodejs
-- name: Installing node and npm
-  yum:
-    name: "{{ packages }}"
-    enablerepo: epel
-    state: installed
-  vars:
-    packages:
-      - nodejs
-      - npm
+- name: Download nvm
+  get_url:
+    url: https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh
+    dest: /home/ec2-user/
+
+- name: Execute install.sh
+  shell:
+    cmd: . /home/ec2-user/install.sh
+    
+
+- name: Install nvm and node
+  shell:
+    cmd: . /home/ec2-user/.nvm/nvm.sh && source /home/ec2-user/.bashrc && nvm install node
