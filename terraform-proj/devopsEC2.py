@@ -37,7 +37,7 @@ class DevopsEC2(TerraformStack):
             ## Shutdown case : stop or terminate
             instance_initiated_shutdown_behavior="terminate",
             ## 종료우발 방지
-            disable_api_termination=True,
+            disable_api_termination=False,
             ## Monitoring using CloudWatch
             monitoring=False,
             ## Tenancy:
