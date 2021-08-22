@@ -41,7 +41,7 @@ resource "ec2_instance" "web" {
         volume_type = ""
 
         ## Volume Size (GiB), 8 ~ 
-        volume_size = 
+        volume_size = 8
 
         ## volume_type에 따라 설정할 수 있다.
         ## iops = 
@@ -129,35 +129,126 @@ resource "aws_lb_target_group" "web_target_grouop" {
     ## Target Type, "instance"(default) / "ip" / "lambda"
     target_type = "instance"
 
+
     ## Protocol Version, "HTTP/1.1" / "HTTP/2" / "GRPC"
     protocol_version = "HTTP/2"
-
-    ## Protocol
-    protocol = ""
 
     ## vpc_id, if Target Type = "ip" or "instance"
     vpc_id = ""
 
+    ## Protocol to use for routing traffic to the targets
+    ## "HTTP" / "HTTPS" / "TCP" / "TCP_UDP" / "UDP" / "TLS" / "GENEVE"/
+    protocol = ""
 
-    ########## Health Check ##########
-
+    ## Port on which targets receive traffic
     ## Port, if Target Type = "ip" or "instance"
     port = 
 
 
-
-    ## 
-    health_check = 
-
-    ## 0 ~ 3600 second (default: 300)
+    ## 기다리는 시간,사용되지 0 ~ 3600 second (default: 300)
     deregistration_delay = 
 
 
+    ########## Health Check ##########
+    health_check = {
+        # Whether health checks are enabled, true(Defulat) / false
+        enalbed = true
+
+        path = "/"
+
+        ## Protocol to use to connect with the target, "HTTP" (Default) / "HTTPS"
+        protocol = "HTTP"
+
+        ## Port to use to connect with the target, "traffic-port"(Default) / 1 ~ 65535
+        port = "traffic-port"
+
+        ## 정상으로 간주하기까지 필요한 연속적 상태 검사 성공 횟수
+        ## 2 ~ 10 (Default 3)
+        healthy_threshold = 5
+
+        ## 비정상 상태로 간주하기까지 필요한 연속적 상태 검사 실패 횟수
+        ## 2 ~ 10 (Default 3)
+        unhealty_threshold = 5
+
+        ## Health check 하는 사이 간격, 5 ~ 300s (Default 30)
+        interval = 30
+
+        ## Health check 요청에 대한 기다리는 시간, 2 ~ 120s (Default 5)
+        ## 해당 시간이 지나면 실패로 간주
+        timeout = 
+
+        ## Target으로부터 응답 성공을 확인할 때 사용하는 HTTP 코드
+        ## 여러 값 지정가능 (ex> 200~202 => "200,202" )
+        matcher = "200,202"
+
+    }
 
 }
 
 
 resource "aws_lb" "web_alb" {
+    
+    name = ""
+
+    ## Type "application" (Default) / "gateway" / "network" 
+    load_balancer_type = 
+
+    ## If true, the LB will be internal
+    ## If false, the LB will locate at Public Subnet (Interent)
+    internal = false
+
+    ## Type of IP address, "ipv4" / "dualstack" : ipv4 + ipv6
+    ip_address_type = "ipv4"
+
+
+    ########## Network Mapping ##########
+    ## subnets = 
+    subnet_mapping = {
+        subnet_id = []
+
+        ## The allocation ID of Elastic IP address
+        ## allocation_id = ""
+
+        ## Option
+        ## private_ipv4_address = 
+        ## ipv6_address = 
+    }
+
+    ## Custromer IPv4 Pool
+    ## customer_owned_ipv4_pool = 
+
+    ## Only valid for application
+    security_groups = []
+
+    access_logs = {
+        ## true / false (Defulat)
+        enabled = false
+
+        ## S3 bucket
+        ## bucket = 
+        ## prefix = 
+    }
+
+    ## Connection Idle time (second), Default 60s
+    idle_timeout = 60
+
+    ## HTTP/2 사용가능 여부
+    enable_http2 = true
+
+    ## true / false (Default)
+    enable_deletion_protection = false
+
+    tags = {
+
+    }
+}
+
+
+resource "aws_lb_listener" "web_alb_listener" {
+
+    
 
 
 }
+
+
